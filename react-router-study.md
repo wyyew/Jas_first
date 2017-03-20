@@ -47,3 +47,9 @@ location对象包括：
 - state         一个捆绑在这个地址上的object对象
 - action        PUSH, REPLACE, 或者 POP中的一个
 - key           唯一ID
+
+> 使用 hashHistory，浏览器上看到的 url 会是这样的: /#/user/haishanh?_k=adseis
+使用 browserHistory，浏览器上看到的 url 会是这样的：/user/haishanh
+看起来当然 browserHistory 很好很理想，但 browserHistory 需要 server 端支持。 而使用hashHistory的时候，因为 url 中 # 符号的存在，从 /#/ 到 /#/user/haishanh 浏览器并不会去发送一次 request，react-router 自己根据 url 去 render 相应的模块。
+而使用 browserHistory 的时候，浏览器从 / 到 /user/haishanh 是会向 server 发送 request 的。所以 server 端是要做特殊配置的。比如用的 express 的话，你需要 handle 所有的路由 app.get('*', (req, res) => { ... })，使用了 nginx 的话，nginx也要做相应的配置。 具体见这里59，还有这个例子42。
+所以你的 App 是静态，没有服务端的话，只能用 hashHistory。
