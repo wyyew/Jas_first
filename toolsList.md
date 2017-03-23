@@ -3,5 +3,8 @@
 
 2. [redux学习视频][2]
 
+3. [redux-actions][3]
+
 [1]:https://github.com/paularmstrong/normalizr
 [2]:https://github.com/xgrommx/awesome-redux
+[3]:https://github.com/acdlite/redux-actions
