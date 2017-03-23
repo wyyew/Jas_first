@@ -28,3 +28,12 @@ function add(y) {return y + x;}
 //这种对外部有依赖（X）也不是纯函数
 
 ```
+
+```
+function pure(x){
+  return function(y){
+    return x + y
+  }
+}
+//对外部没有依赖每次相同输入对应输出一个相同的结果
+```
