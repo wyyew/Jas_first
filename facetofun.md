@@ -35,5 +35,6 @@ function pure(x){
     return x + y
   }
 }
+pure（5)(1)
 //对外部没有依赖每次相同输入对应输出一个相同的结果
 ```
