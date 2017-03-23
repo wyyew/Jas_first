@@ -97,3 +97,20 @@ var multiple x => x * 5
 var m = compose(add, multiple)(2) //15
 
 ```
+## 高阶函数
+
+> 以一个函数为参数，同时返回一个函数做为函数的返回值
+```
+//es6
+var hFn = x => y => {
+  return y(x)
+}
+//es5
+var hFn = function(x){
+  return function(y){
+    return y(x)
+  }
+}
+```
+## 高阶组件
+> 组件也是函数 ，所以也可以效仿高阶函数，把一个组件做为参数传给一个组件然后在组件内部对传进来的组件添加参数，然后返回新的组件
