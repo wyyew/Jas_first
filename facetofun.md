@@ -38,3 +38,18 @@ function pure(x){
 pure（5)(1)
 //对外部没有依赖每次相同输入对应输出一个相同的结果
 ```
+## 柯里化
+> 只传递函数的一部分参数来调用它，让它返回一个函数去处理剩下的参数
+
+```
+//非柯里化函数
+function pure(x, y) {
+  return x + y
+}
+//柯里化函数
+function pure(x){
+  return function(y){
+    return x + y
+  }
+}
+```
