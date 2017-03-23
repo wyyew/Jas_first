@@ -66,3 +66,34 @@ var r3 = r1(10);//传一个x后可以多次复用
 
 - 参数复用， 利用柯里化我们可以固定住其中部分参数，在调用的时候这个参数就相当于已经被记住了，不需要再次传递
 - 延迟执行，不断的柯里化累积传入的参数，最后执行
+
+## 函数的组合 compose
+
+> 当函数纯化之后，有一个特点就是函数可以像堆积木一样组合在一起，变成一个大的函数体
+```
+let f = x => x + 1;
+let h = x => x + 2
+let i = x => x + 3;
+
+i(h(f(x))) //函数嵌套
+```
+
+```
+//简易的 compose函数定义
+
+var compose = function(f, g) {
+  return function(x) {
+    return f(g(x))
+  };
+};
+
+//使用 es6 语法
+
+let compose = (f, g) => (x => f(g(x)))
+
+var add x => x + 1
+var multiple x => x * 5
+
+var m = compose(add, multiple)(2) //15
+
+```
