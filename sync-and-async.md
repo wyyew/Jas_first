@@ -247,3 +247,53 @@ function thunkA() {
 }
 
 ```
+
+## redux-promise
+
+另外一个 redux 文档中提到的异步组件为 redux-promise, 我们直接分析一下其源码吧
+
+```
+import { isFSA } from 'flux-standard-action';
+
+function isPromise(val) {
+  return val && typeof val.then === 'function';
+}
+
+export default function promiseMiddleware({ dispatch }) {
+  return next => action => {
+    if (!isFSA(action)) {
+      return isPromise(action)
+        ? action.then(dispatch)
+        : next(action);
+    }
+
+    return isPromise(action.payload)
+      ? action.payload.then(
+          result => dispatch({ ...action, payload: result }),
+          error => {
+            dispatch({ ...action, payload: error, error: true });
+            return Promise.reject(error);
+          }
+        )
+      : next(action);
+  };
+}
+```
+大概的逻辑就是：
+
+如果不是标准的 flux action，那么判断是否是 promise, 是执行 action.then(dispatch)，否执行 next(action)
+
+如果是标准的 flux action, 判断 payload 是否是 promise，是的话 payload.then 获取数据，然后把数据作为 payload 重新 dispatch({ ...action, payload: result}) , 否执行 next(action)
+
+结合 redux-promise 可以利用 es7 的 async 和 await 语法，简化异步的 promiseActionCreator 的设计， eg:
+
+```
+export default async (payload) => {
+  const result = await somePromise;
+  return {
+    type: "PROMISE_ACTION",
+    payload: result.someValue;
+  }
+}
+```
+
