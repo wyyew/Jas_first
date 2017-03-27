@@ -145,4 +145,105 @@ export function createThunkAction(payload) {
 this.dispatch(createThunkAction(payload));
 ```
 
-> '拥有 dispatch 方法的组件为 redux 中的 container component'
+> ** 拥有 dispatch 方法的组件为 redux 中的 container component **
+
+## thunk 源码
+
+说了这么多，redux-thunk 是不是做了很多工作，实现起来很复杂，那我们来看看 thunk 中间件的实现
+
+```
+function createThunkMiddleware(extraArgument) {
+  return ({ dispatch, getState }) => next => action => {
+    if (typeof action === 'function') {
+      return action(dispatch, getState, extraArgument);
+    }
+
+    return next(action);
+  };
+}
+
+const thunk = createThunkMiddleware();
+thunk.withExtraArgument = createThunkMiddleware;
+
+export default thunk;
+```
+
+就这么简单，只有 14 行源码，但是这简短的实现却能完成复杂的异步处理，怎么做到的，我们来分析一下：
+
+判断如果 action 是 function 那么执行 action(dispatch, getState, ...)
+
+action 也就是一个 thunk
+
+执行 action 相当于执行了异步逻辑
+
+action 中执行 dispatch
+
+开始新的 redux 数据流，重新回到最开始的逻辑（thunk 可以嵌套的原因）
+
+把执行的结果作为返回值直接返回
+
+直接返回并没有调用其他中间件，也就意味着中间件的执行在这里停止了
+
+可以对返回值做处理（后面会讲如果返回值是 Promise 的情况）
+
+如果不是函数直接调用其他中间件并返回
+
+理解了这个过后是不是对 redux-thunk 的使用思路变得清晰了
+
+## thunk 的组合
+
+根据 redux-thunk 的特性，可以做出很有意思的事情
+
+1. 可以递归的 dispatch(thunk) -> 实现 thunk 的组合；
+
+2. thunk 运行结果会作为 dispatch返回值 -> 利用返回值为 Promise 可以实现多个 thunk 的编排;
+
+thunk 组合例子：
+
+```
+function thunkC() {
+    return function(dispatch) {
+        dispatch(thunkB())
+    }
+}
+function thunkB() {
+    return function (dispatch) {
+        dispatch(thunkA())
+    }
+}
+function thunkA() {
+    return function (dispatch) {
+        dispatch({type: 'THUNK_ACTION'})
+    }
+}
+```
+
+Promise 例子
+
+```
+function ajaxCall() {
+    return fetch(...);
+}
+
+function thunkC() {
+    return function(dispatch) {
+        dispatch(thunkB(...))
+        .then(
+            data => dispatch(thunkA(data)),
+            err  => dispatch(thunkA(err))
+        )
+    }
+}
+function thunkB() {
+    return function (dispatch) {
+        return ajaxCall(...)
+    }
+}
+
+function thunkA() {
+    return function (dispatch) {
+        dispatch({type: 'THUNK_ACTION'})
+    }
+}
+
+```
