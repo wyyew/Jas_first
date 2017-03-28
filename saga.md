@@ -104,3 +104,38 @@ const store = createStore(
 sagaMiddleware.run(mySaga)
 ```
 
+### 第三步：定义 sagas/index.js
+
+```
+import { takeEvery } from 'redux-saga'
+import { put } from 'redux-saga/effects'
+
+export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+// 将异步执行 increment 任务
+export function* incrementAsync() {
+  yield delay(1000)
+  yield put({ type: 'INCREMENT' })
+}
+
+// 在每个 INCREMENT_ASYNC action 调用后，派生一个新的 incrementAsync 任务
+export default function* watchIncrementAsync() {
+  yield* takeEvery('INCREMENT_ASYNC', incrementAsync)
+}
+```
+
+### 第四步：组件中调用
+
+``
+this.dispatch({type: 'INCREMENT_ASYNC'})
+```
+
+> redux-saga 基于 Generator 有很多高级的特性， 如：
+
+1. 基于 take Effect 实现更自由的任务编排
+
+2. fork 和 cancel 实现非阻塞任务
+
+3. 并行任何和 race 任务
+
+4. saga 组合 ，yield* saga
