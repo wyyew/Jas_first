@@ -1,5 +1,7 @@
 ## redux-saga 介绍
 
+[](https://zhuanlan.zhihu.com/p/21398212)
+
 redux-saga 也是解决 redux 异步 action 的一个中间件，不过和之前的设计有本质的不同
 
 1. redux-saga 完全基于 Es6 的 Generator Function
