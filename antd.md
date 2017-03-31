@@ -1,0 +1,4 @@
+- 如果是react 14.7版本时，使用getFieldDecorator API时会后错，直接使用getFieldProps代替，即可
+- this.props.form 中含有大量的方法，可以去这里调用
+- 刚开始使用大部分的报错是因为antd中的方法都没有 bind(this) 绑定this，只要绑定this即可
+- 使用antd组件不能直接export default  组件名称，必须先class，最后使用antd的方法导出组件：export default creatForm()(组件名称)
