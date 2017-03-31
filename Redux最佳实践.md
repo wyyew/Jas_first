@@ -38,3 +38,5 @@
 ### 关于 Selector
 
 我们倾向于把所有的 view 的数据逻辑都放在 selector 中，而不是分散到每个 view 的 render 方法中。这样的好处是你很容易在多个 selector 中发现重复的逻辑，抽出共用的方法。但是也有坏处，就是 selector 往往会非常大（我们的 selector function 会单独放一个文件），container 的 props 会非常多，并且 container 需要知道所有子 view 的显示逻辑。不过为了增加代码的复用性，减少重复代码，这些都是值得的。
+
+[其它]（https://zhuanlan.zhihu.com/p/22405838）
